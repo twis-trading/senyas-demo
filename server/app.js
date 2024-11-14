@@ -39,8 +39,6 @@ server.listen(port, function(){
 
 global.last;
 
-/*console.log(__dirname + '../public');
-app.use(express.static(__dirname + '../public'));*/
 
 io.on('connection', function(socket){
     console.log('New device is connected: ' + socket.id);
@@ -57,14 +55,14 @@ io.on('connection', function(socket){
     socket.on('rejoin', onReJoin);
     socket.on('send_notification', onSendNotification);
     socket.on('track_alert', onTrackAlert);
-    socket.on('send_alert_dept', onSendAlertDept);
     socket.on('RESPOND_ALERT', onRespondAlert);
     socket.on('location_update', onLocationUpdate);
     socket.on('RESP_UPDATE', onRespUpdate);
+    socket.on('send_alert_dept', onSendAlertDept);
     socket.on('send_alert', onSendAlert);
-    socket.on('accept_alert', onAcceptAlert);
     socket.on('send_alert_ac', onSendAlertAc);
     socket.on('send_alert_resp', onSendAlertResp);
+    socket.on('accept_alert', onAcceptAlert);
     socket.on('resp_reg', onRespRegister);
     socket.on('incident_status', onIncidentStatus);
     socket.on('user_reg', onUserRegister);
@@ -98,7 +96,6 @@ io.on('connection', function(socket){
 
     socket.on('RESP_REPORT', onRespReport);
     socket.on('reports', onReports);
-
 
     socket.on('track_resp2', onTrackresp2);
     socket.on('logs', onLog);
@@ -343,7 +340,6 @@ io.on('connection', function(socket){
       });
     }
 
-
     function onGetLatestVersion(){
       console.log("onGetLatestVersion");
       pool.getConnection(function(error, connection){
@@ -444,7 +440,6 @@ io.on('connection', function(socket){
 
     }
 
-
     function onReports(){
       console.log("reports");
       pool.getConnection(function (error, connection) {
@@ -496,6 +491,7 @@ io.on('connection', function(socket){
           connection.release(error => error ? reject(error) : resolve());
       });
     }
+    
     function onLoadMarkers(data){
       console.log(data);
       if(data.alert_type == "POLICE"){
@@ -628,7 +624,6 @@ io.on('connection', function(socket){
         });
     }
 
-
     function onResendCode(data){
 
         console.log("=========== RESEND CODE ================");
@@ -685,9 +680,11 @@ io.on('connection', function(socket){
     function onCloseTrackDept(data){
         socket.broadcast.emit('dept_close_tab', data);
     }
+
     function onAccepted(data){
       socket.broadcast.emit('on_alert_acceptede', data);
     }
+
     function onCheckNottif(){
       pool.getConnection(function (error, connection) {
           if (error) throw error;
@@ -713,6 +710,7 @@ io.on('connection', function(socket){
           connection.release(error => error ? reject(error) : resolve());
       });
     }
+
     function onCheckNum(data){
       pool.getConnection(function (error, connection) {
           console.log("------------- CHECK NUM ----------------");
@@ -821,6 +819,7 @@ io.on('connection', function(socket){
             });
         }
     }
+
     function onCheckUser(data){
         console.log(data);
         pool.getConnection(function (error, connection) {
@@ -927,6 +926,7 @@ io.on('connection', function(socket){
             });
         });
     }
+
     function onUserLogin(data){
         console.log(data);
         console.log("------------ username -----------");
@@ -1009,6 +1009,7 @@ io.on('connection', function(socket){
             connection.release(error => error ? reject(error) : resolve());
         });
     }
+
     function onRespLogin(data){
         console.log('respondernew2 : ', {data});
         pool.getConnection(function (error, connection) {
@@ -1070,6 +1071,7 @@ io.on('connection', function(socket){
         });
 //onTrackresp2();
     }
+
     function onReJoin(data){
         pool.getConnection(function (error, connection) {
             connection.query("SELECT id FROM alerts WHERE imei='" + data + "' AND status IN (0,1)", function (err, result) {
@@ -1083,6 +1085,7 @@ io.on('connection', function(socket){
             });
         });
     }
+
     function onSendNotification(data){
         console.log(data);
         var info_blast = [];
@@ -1114,6 +1117,7 @@ io.on('connection', function(socket){
 
         });
     }
+
     function onTrackAlert(room, dept, date){ //change from join to track_alert
         socket.join(room, function() {
             console.log('ontrackAlert room');
@@ -1151,6 +1155,7 @@ io.on('connection', function(socket){
             });
         });
     }
+
     function onRespondAlert(room, date){
         console.log("respond_alert" + room);
         socket.join(room, function() {
@@ -1195,6 +1200,7 @@ io.on('connection', function(socket){
             });
         });
     }
+
     function onLocationUpdate(data){
         console.log(data);
         console.log('location_update');
@@ -1253,6 +1259,7 @@ io.on('connection', function(socket){
             // idol new update
         });
     }
+
     function onRespUpdate(data){
         //printLog('RESP_UPDATE', data)
         console.log("RESP_UPDATE:" + data.lat + ", " + data.lng + ", " + data.aimei + ", " + data.battery + ", " + data.gps);
@@ -1382,6 +1389,7 @@ io.on('connection', function(socket){
 
         });
     }
+
     function onTrackresp(){
         //printLog('RESP_UPDATE', data)
         console.log("RESP_RELOAD: ++++++--------");
@@ -1496,7 +1504,6 @@ io.on('connection', function(socket){
         });
     }
 
-
     function onSendAlert(data){
         console.log('Alert : ' + {data});
         pool.getConnection(function(error, connection) {
@@ -1568,7 +1575,6 @@ io.on('connection', function(socket){
 
     }
 
-
     function onAcceptAlert(data){
       var alert_id, fullname, alert_type, lat, lng;
         pool.getConnection(function(error, connection){
@@ -1620,6 +1626,7 @@ io.on('connection', function(socket){
             });
         });
     }
+
     function onSendAlertAc(data){
         var alert_id;
         var ac_id;
@@ -1655,6 +1662,7 @@ io.on('connection', function(socket){
             });
         });
     }
+
     function onSendAlertDept(data){
         var sid = [];
         var id = "";
@@ -1692,6 +1700,7 @@ io.on('connection', function(socket){
 
         });
     }
+
     function onSendAlertResp(data){
         console.log("Responder ");
         console.log({data});
@@ -1739,6 +1748,7 @@ io.on('connection', function(socket){
             });
         });
     }
+
     function onRespRegister(data){
         console.log(data);
         pool.getConnection(function(error, connection) {
@@ -1774,6 +1784,7 @@ io.on('connection', function(socket){
             });
         });
     }
+
     function onUserRegister(data){
         console.log(data);
         pool.getConnection(function(error, connection) {
@@ -1802,12 +1813,14 @@ io.on('connection', function(socket){
 
         });
     }
+
     function onLoginSms(){
         console.log("sms receiver connected");
         console.log("eut sms");
         sms.socket_id = socket.id;
         socket.broadcast.emit('sms_connected');
     }
+
     function onCheckRespAlert(data){
         pool.getConnection(function (error, connection) {
             if (error) throw error;
@@ -1825,6 +1838,7 @@ io.on('connection', function(socket){
             });
         });
     }
+
     function onRequestEnd(data){
         socket.emit('request_end', data);
         socket.to(data.imei).emit('request_end', data);
@@ -1866,6 +1880,7 @@ io.on('connection', function(socket){
             });
         });
     }
+
     function onEndAlert(data){
       var fullname, alert_id, alert_type;
         console.log("END PUTANG INAs " + data.imei);
@@ -1955,6 +1970,7 @@ io.on('connection', function(socket){
         });
 
     }
+
     function onAutoLogin(data) {
         console.log(data);
         console.log("============= update socket users ================ ");
@@ -1996,8 +2012,8 @@ io.on('connection', function(socket){
             });
         });
     }
-    function onUserEndAlert(data) {
 
+    function onUserEndAlert(data) {
     }
 
     function onTrackMessage(data) {
@@ -2027,6 +2043,7 @@ io.on('connection', function(socket){
         }
         return "_" + str
     }
+
     function getNewSessionId(){
         var ssid="";
         for(var b=0; 60>b; b++){
@@ -2036,6 +2053,7 @@ io.on('connection', function(socket){
         }
         return ssid;
     }
+
     function isInt(value){
         var x;
         if (isNaN(value)) {
@@ -2044,6 +2062,7 @@ io.on('connection', function(socket){
         x = parseFloat(value);
         return (x | 0) === x;
     }
+
     function  change_status(data, status) {
 
         console.log("change_status : " + status);
@@ -2083,4 +2102,5 @@ io.on('connection', function(socket){
             socket.to(tracking[tr]['socket_id']).emit('change_marker', {name: data.id, type: data.dep_id, status: status});
         }
     }
+
 });
